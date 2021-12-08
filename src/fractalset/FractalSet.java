@@ -36,12 +36,20 @@ public class FractalSet extends JFrame {
                 System.out.println("Key " + e.getKeyChar() + " pressed.");
                 System.out.println("Keycode: " + e.getKeyCode());
                 switch (e.getKeyCode()) {
-                    case 45: fractalSet.panel.zoomOut(); break;
-                    case 61: fractalSet.panel.zoomIn(); break;
-                    case 65: fractalSet.panel.panLeft(); break;
-                    case 68: fractalSet.panel.panRight(); break;
-                    case 83: fractalSet.panel.panDown(); break;
-                    case 87: fractalSet.panel.panUp(); break;
+                    case 45: fractalSet.panel.zoomOut(); break;  // -
+                    case 61: fractalSet.panel.zoomIn(); break;   // +
+                    case 65: fractalSet.panel.panLeft(); break;  // a
+                    case 72: fractalSet.panel.panLeft(); break;  // h
+                    case 37: fractalSet.panel.panLeft(); break;  // Left Arrow
+                    case 68: fractalSet.panel.panRight(); break; // d
+                    case 76: fractalSet.panel.panRight(); break; // l
+                    case 39: fractalSet.panel.panRight(); break; // Right Arrow
+                    case 83: fractalSet.panel.panDown(); break;  // s
+                    case 74: fractalSet.panel.panDown(); break;  // j
+                    case 40: fractalSet.panel.panDown(); break;  // Down Arrow
+                    case 87: fractalSet.panel.panUp(); break;    // w
+                    case 75: fractalSet.panel.panUp(); break;    // k
+                    case 38: fractalSet.panel.panUp(); break;    // Up Arrow
                 }
             };
             

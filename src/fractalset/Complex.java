@@ -95,8 +95,16 @@ public class Complex {
         return this.real;
     }
     
+    public void setReal(double real) {
+        this.real = real;
+    }
+    
     public double getImaginary() {
         return this.imaginary;
+    }
+    
+    public void setImaginary(double imaginary) {
+        this.imaginary = imaginary;
     }
     
     public double magnitudeSquared() {
@@ -106,6 +114,16 @@ public class Complex {
     @Override
     public String toString() {
         return this.real + " + " + this.imaginary + "i";
+    }
+    
+    public static void main(String[] args) {
+        Complex c = new Complex(-1, 5);
+        System.out.println(c);
+        System.out.println(c.getReal());
+        System.out.println(c.getImaginary());
+        Complex a = new Complex(Math.abs(c.getReal()), Math.abs(c.getImaginary()));
+        System.out.println(a);
+        System.out.println(a.multiply(a));
     }
     
 } // Complex

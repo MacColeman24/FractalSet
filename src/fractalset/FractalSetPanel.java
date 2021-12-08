@@ -105,9 +105,10 @@ public class FractalSetPanel extends JPanel {
                 // Implementation of Burning ship fractal
 //                while (z.magnitudeSquared() < 4.0 && count < 64) {
 //                    // next z = (|Re(z)| + |Im(z)|i)^2 + c
-//                    z = new Complex(Math.abs(z.getReal()), Math.abs(z.getImaginary()));
-//                    z.multiply(z);
-//                    z = z.add(c);
+//                    Complex newZ = new Complex();
+//                    newZ.setReal(z.getReal()*z.getReal() - z.getImaginary()*z.getImaginary() - c.getReal());
+//                    newZ.setImaginary(2*Math.abs(z.getReal()*z.getImaginary()) - c.getImaginary());
+//                    z = newZ;
 //                    count++;
 //                }
                 
@@ -131,13 +132,13 @@ public class FractalSetPanel extends JPanel {
     } // paintComponent( Graphics )
     
     public void zoomIn() {
-        double newScale = this.scale - 0.1;
+        double newScale = this.scale * 0.95;
         this.scale = newScale <= 0.0 ? 0.1 : newScale; 
         this.repaint();
     }
     
     public void zoomOut() {
-        this.scale += 0.1;
+        this.scale *= 1/0.95;
         this.repaint();
     }
     

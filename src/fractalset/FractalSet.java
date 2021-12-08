@@ -8,10 +8,10 @@ import javax.swing.ImageIcon;
 
 public class FractalSet extends JFrame {
 
-    private static final int FRACTAL_WIDTH = 512;
-    private static final int FRACTAL_HEIGHT = 512;
+    private static final int FRACTAL_WIDTH = 720;
+    private static final int FRACTAL_HEIGHT = 720;
     private static final String FRACTAL_TITLE = "Fractal";
-    private static final ImageIcon img = new ImageIcon("/home/mac/Downloads/EA8J7U1UcAIVdhD.jpg");
+    private static final ImageIcon img = new ImageIcon("src/icon.png");
     private FractalSetPanel panel;
 
     public FractalSet() {

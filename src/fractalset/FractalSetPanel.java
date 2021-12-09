@@ -160,7 +160,7 @@ public class FractalSetPanel extends JPanel {
             g2D.drawString("Center: " + new Complex(this.centerX, this.centerY), 5, 30);
             g2D.drawString("Scale: " + this.scale, 5, 45);
             g2D.drawString(this.lastAction, 5, 60);
-            g2D.drawString("Press (m) for help (See stdout)", 5, 691-10);
+            g2D.drawString("Press (m) for help (See System.out)", 5, 691-10);
         }
 
     } // paintComponent( Graphics )
@@ -229,12 +229,13 @@ public class FractalSetPanel extends JPanel {
     }
     
     public void printCenter() {
-        this.lastAction = "Current centerpoint printed to stdout";
+        this.lastAction = "Current centerpoint printed to System.out";
         System.out.println("Current center: \n  " + new Complex(this.centerX, this.centerY));
+        this.repaint();
     }
     
     public void showHelp() {
-        this.lastAction = "Help printed to stdout";
+        this.lastAction = "Help printed to System.out";
         
         System.out.println("""
             FractalSet Version 1.0
@@ -285,7 +286,7 @@ public class FractalSetPanel extends JPanel {
                     Return home (Resets scaling, centerpoint of drawing)
                 
                 Q
-                    Print the centerpoint to stdout
+                    Print the centerpoint to System.out
                           
             """);
     }

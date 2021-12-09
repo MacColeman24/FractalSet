@@ -16,8 +16,8 @@ This program paints the Mandelbrot set or the Burning Ship set. You can pan arou
 |X| Toggle debugging information display
 |C| Toggle centerline display
 |B| Return home (Reset scaling)
-|Q| Print centerpoint to stdout
-|M| Print help message to stdout
+|Q| Print centerpoint to System.out
+|M| Print help message to System.out 
 
 ![The lobe on the main antenna of the mandelbrot set](src/mandelbrot.png)
 ![The large ship on the burning ship fractal](src/burning_ship.png)

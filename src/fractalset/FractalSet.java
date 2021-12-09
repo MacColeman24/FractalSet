@@ -33,8 +33,10 @@ public class FractalSet extends JFrame {
         fractalSet.addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent e) {
-                System.out.println("Key " + e.getKeyChar() + " pressed.");
-                System.out.println("Keycode: " + e.getKeyCode());
+                
+                // System.out.println("Key " + e.getKeyChar() + " pressed.");
+                // System.out.println("Keycode: " + e.getKeyCode());
+                
                 switch (e.getKeyCode()) {
                     case 45: fractalSet.panel.zoomOut(); break;  // -
                     case 61: fractalSet.panel.zoomIn(); break;   // +
@@ -50,6 +52,12 @@ public class FractalSet extends JFrame {
                     case 87: fractalSet.panel.panUp(); break;    // w
                     case 75: fractalSet.panel.panUp(); break;    // k
                     case 38: fractalSet.panel.panUp(); break;    // Up Arrow
+                    case 66: fractalSet.panel.goHome(); break;           // b
+                    case 67: fractalSet.panel.toggleCenter(); break;     // c
+                    case 77: fractalSet.panel.showHelp(); break;         // m
+                    case 81: fractalSet.panel.printCenter(); break;      // q
+                    case 88: fractalSet.panel.toggleDebug(); break;      // x
+                    case 90: fractalSet.panel.toggleMandelbrot(); break; // z
                 }
             };
             

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import javax.swing.JPanel;
@@ -15,6 +16,11 @@ public class FractalSetPanel extends JPanel {
     private double scale;
     private double centerX;
     private double centerY;
+    private boolean isMandelbrot = true;
+    private boolean showDebug = true;
+    private boolean showCenter = true;
+    private boolean showAxes = false;
+    private String lastAction = "";
     
     private BufferedImage image;
     
@@ -94,22 +100,24 @@ public class FractalSetPanel extends JPanel {
                 
                 int count = 0;
                 
-                //Implementation of Mandelbrot set
-//                while( z.magnitudeSquared() < 4.0 && count < 64 ) {
-//                    // z = z^2 + c
-//                    z = z.multiply(z);
-//                    z = z.add(c);
-//                    count++;
-//                } // while
-                
-                // Implementation of Burning ship fractal
-                while (z.magnitudeSquared() < 4.0 && count < 64) {
-                    // next z = (|Re(z)| + |Im(z)|i)^2 + c
-                    Complex newZ = new Complex();
-                    newZ.setReal(z.getReal()*z.getReal() - z.getImaginary()*z.getImaginary() - c.getReal());
-                    newZ.setImaginary(2*Math.abs(z.getReal()*z.getImaginary()) - c.getImaginary());
-                    z = newZ;
-                    count++;
+                if (this.isMandelbrot) {
+                    //Implementation of Mandelbrot set
+                    while( z.magnitudeSquared() < 4.0 && count < 64 ) {
+                        // z = z^2 + c
+                        z = z.multiply(z);
+                        z = z.add(c);
+                        count++;
+                    } // while
+                } else {
+                   // Implementation of Burning ship fractal
+                    while (z.magnitudeSquared() < 4.0 && count < 64) {
+                       // next z = (|Re(z)| + |Im(z)|i)^2 + c
+                       Complex newZ = new Complex();
+                       newZ.setReal(z.getReal()*z.getReal() - z.getImaginary()*z.getImaginary() - c.getReal());
+                       newZ.setImaginary(2*Math.abs(z.getReal()*z.getImaginary()) - c.getImaginary());
+                       z = newZ;
+                       count++;
+                    }
                 }
                 
                 if( count == 64 ) {
@@ -129,36 +137,156 @@ public class FractalSetPanel extends JPanel {
         } // for
         
         g2D.drawImage( image, scale, this);
+        
+        g2D.setColor(Color.WHITE);
+        
+        //unused, too lazy to implement this
+        if (this.showAxes) {
+            double realZero = 15.0;
+            double imaginaryZero = 15.0;
+            
+            g2D.draw(new Line2D.Double(0.0, imaginaryZero, 720.0, imaginaryZero));
+            g2D.draw(new Line2D.Double(realZero, 0.0, realZero, 691.0));
+        }
+        
+        
+        if (this.showCenter) {
+            g2D.draw(new Line2D.Double(0.0, 691.0 / 2, 720.0, 691.0 / 2));
+            g2D.draw(new Line2D.Double(720.0 / 2, 0.0, 720.0 / 2, 720.0));
+        }
+        
+        if (this.showDebug) {
+            g2D.drawString(this.isMandelbrot ? "Mandelbrot Set" : "Burning Ship", 5, 15);
+            g2D.drawString("Center: " + new Complex(this.centerX, this.centerY), 5, 30);
+            g2D.drawString("Scale: " + this.scale, 5, 45);
+            g2D.drawString(this.lastAction, 5, 60);
+            g2D.drawString("Press (m) for help (See stdout)", 5, 691-10);
+        }
+
     } // paintComponent( Graphics )
     
     public void zoomIn() {
         double newScale = this.scale * 0.95;
         this.scale = newScale <= 0.0 ? 0.1 : newScale; 
+        this.lastAction = "Zoom in";
         this.repaint();
     }
     
     public void zoomOut() {
         this.scale *= 1/0.95;
+        this.lastAction = "Zoom out";
         this.repaint();
     }
     
     public void panUp() {
         this.centerX -= this.scale / 50;
+        this.lastAction = "Pan down real axis";
         this.repaint();
     }
     
     public void panDown() {
         this.centerX += this.scale / 50;
+        this.lastAction = "Pan up real axis";
         this.repaint();
     }
     
     public void panLeft() {
         this.centerY -= this.scale / 50;
+        this.lastAction = "Pan down complex axis";
         this.repaint();
     }
     
     public void panRight() {
         this.centerY += this.scale / 50;
+        this.lastAction = "Pan up complex axis";
         this.repaint();
+    }
+    
+    public void toggleMandelbrot() {
+        this.isMandelbrot = !this.isMandelbrot;
+        this.lastAction = "Switched to " + (this.isMandelbrot ? "Mandelbrot" : "Burning Ship") + " set";
+        this.repaint();
+    }
+    
+    public void toggleDebug() {
+        this.showDebug = !this.showDebug;
+        this.lastAction = "Debug toggled " + (this.showDebug ? "on" : "off");
+        this.repaint();
+    }
+    
+    public void toggleCenter() {
+        this.showCenter = !this.showCenter;
+        this.lastAction = "Centerlines toggled " + (this.showCenter ? "on" : "off");
+        this.repaint();
+    }
+    
+    public void goHome() {
+        this.centerX = 0.0;
+        this.centerY = 0.0;
+        this.scale = 4.0;
+        this.lastAction = "Rehomed";
+        this.repaint();
+    }
+    
+    public void printCenter() {
+        this.lastAction = "Current centerpoint printed to stdout";
+        System.out.println("Current center: \n  " + new Complex(this.centerX, this.centerY));
+    }
+    
+    public void showHelp() {
+        this.lastAction = "Help printed to stdout";
+        
+        System.out.println("""
+            FractalSet Version 1.0
+                Authors: Leon Tabak and Mac Coleman
+                Date: 12/8/2021
+            ┄┄┄┄┄┄┄┄┄┄┄┄      
+            
+            HELP:
+                    This program displays two fractals, the Mandelbrot set and
+                    the Burning ship set. Both fractals are drawn by iterating
+                    the complex function 64 times.
+            ┄┄┄┄┄┄┄┄┄┄┄┄
+                              
+            KEYBINDINGS:
+                        
+                M
+                    Display this help dialog
+                           
+                W, K, Up Arrow
+                    Pan the camera up (Along the negative real numbers)
+                           
+                S, J, Down Arrow
+                    Pan the camera down (Along the positive real numbers)
+                           
+                A, H, Left Arrow
+                    Pan the camera left (Along the negative imaginary numbers)
+                           
+                           
+                D, L, Right Arrow 
+                    Pan the camera right (Along the positive imaginary numbers)
+                           
+                + (Plus key)
+                    Zoom in
+                           
+                - (Minus key)
+                    Zoom out
+                           
+                Z
+                    Switch between drawing the Mandelbrot and Burning Ship set.
+            
+                X
+                    Toggle debug information display
+                          
+                C
+                    Toggle centerline display
+                           
+                B
+                    Return home (Resets scaling, centerpoint of drawing)
+                
+                Q
+                    Print the centerpoint to stdout
+                          
+            """);
     }
 } // FractalSetPanel

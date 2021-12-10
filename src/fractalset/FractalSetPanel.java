@@ -248,6 +248,7 @@ public class FractalSetPanel extends JPanel {
         this.centerY = 0.0;
         this.scale = 4.0;
         this.iterations = 64;
+        this.setUpColors();
         this.lastAction = "Rehomed";
         this.repaint();
     }

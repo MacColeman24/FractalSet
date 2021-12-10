@@ -1,7 +1,7 @@
 ![FractalSet Icon](src/icon.png)
 # Fractal Painter Program
 
-This program paints the Mandelbrot set or the Burning Ship set. You can pan around the canvas with the W, A, S, and D keys, as well as zoom with the + and - keys. HJKL and the arrow keys can also be used for navigation. The program uses 64 iterations of the fractal to determine which pixels belong in the set.
+This program paints the Mandelbrot set or the Burning Ship set. You can pan around the canvas with the W, A, S, and D keys, as well as zoom with the + and - keys. HJKL and the arrow keys can also be used for navigation. The program uses 64 iterations of the fractal by default to determine which pixels belong in the set.
 
 # Key Bindings
 |Key     | Action |
@@ -12,6 +12,8 @@ This program paints the Mandelbrot set or the Burning Ship set. You can pan arou
 |D, L, Right Arrow| Pan right (Along the positive imaginary axis)
 |+ (Plus key)| Zoom in
 |- (Minus key)| Zoom out
+|{ (Opening brace)|Decrease the number of iterations used to draw the fractal
+|} (Closing brace)|Increase the number of iterations used to draw the fractal
 |Z| Switch between Mandelbrot and Burning Ship sets
 |X| Toggle debugging information display
 |C| Toggle centerline display

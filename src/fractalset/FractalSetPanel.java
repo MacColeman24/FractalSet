@@ -21,6 +21,8 @@ public class FractalSetPanel extends JPanel {
     private boolean showCenter = true;
     private boolean showAxes = false;
     private String lastAction = "";
+    private int[][] colors;
+    private int iterations;
     
     private BufferedImage image;
     
@@ -33,8 +35,27 @@ public class FractalSetPanel extends JPanel {
         this.scale = 4.0;
         this.centerX = 0;
         this.centerY = 0;
+        this.iterations = 64;
+        
+        this.setUpColors();
     } // FractalSetPanel()
 
+    public void setUpColors() {
+        this.colors = new int[this.iterations][3];
+        
+        for( int i = 0; i < this.iterations; i++ ) {
+            double fraction = ((double) i) / this.iterations - 1;
+//            int red = (int) ((1 - fraction) * r0 + fraction * r1);
+//            int green = (int) ((1 - fraction) * g0 + fraction * g1);
+//            int blue = (int) ((1 - fraction) * b0 + fraction * b1);
+
+            Color garbage = new Color(Color.HSBtoRGB((float) fraction, 1.0f, 1.0f));
+            
+            this.colors[i][0] = garbage.getRed(); //red;
+            this.colors[i][1] = garbage.getGreen(); //green;
+            this.colors[i][2] = garbage.getBlue(); //blue;            
+        } // for
+    }
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -49,8 +70,6 @@ public class FractalSetPanel extends JPanel {
 
         WritableRaster raster = this.image.getRaster();
         
-        int [][] palette = new int[64][3];
-        
         Color startColor = Color.RED;
         int r0 = startColor.getRed();
         int g0 = startColor.getGreen();
@@ -61,18 +80,7 @@ public class FractalSetPanel extends JPanel {
         int g1 = endColor.getGreen();
         int b1 = endColor.getBlue();
         
-        for( int i = 0; i < 64; i++ ) {
-            double fraction = ((double) i) / 63;
-//            int red = (int) ((1 - fraction) * r0 + fraction * r1);
-//            int green = (int) ((1 - fraction) * g0 + fraction * g1);
-//            int blue = (int) ((1 - fraction) * b0 + fraction * b1);
 
-            Color garbage = new Color(Color.HSBtoRGB((float) fraction, 1.0f, 1.0f));
-            
-            palette[i][0] = garbage.getRed(); //red;
-            palette[i][1] = garbage.getGreen(); //green;
-            palette[i][2] = garbage.getBlue(); //blue;            
-        } // for
         
         int [] blue = { 0, 0, 255 };
         int [] black = { 0, 0, 0 };
@@ -102,7 +110,7 @@ public class FractalSetPanel extends JPanel {
                 
                 if (this.isMandelbrot) {
                     //Implementation of Mandelbrot set
-                    while( z.magnitudeSquared() < 4.0 && count < 64 ) {
+                    while( z.magnitudeSquared() < 4.0 && count < this.iterations ) {
                         // z = z^2 + c
                         z = z.multiply(z);
                         z = z.add(c);
@@ -110,7 +118,7 @@ public class FractalSetPanel extends JPanel {
                     } // while
                 } else {
                    // Implementation of Burning ship fractal
-                    while (z.magnitudeSquared() < 4.0 && count < 64) {
+                    while (z.magnitudeSquared() < 4.0 && count < this.iterations) {
                        // next z = (|Re(z)| + |Im(z)|i)^2 + c
                        Complex newZ = new Complex();
                        newZ.setReal(z.getReal()*z.getReal() - z.getImaginary()*z.getImaginary() - c.getReal());
@@ -120,11 +128,11 @@ public class FractalSetPanel extends JPanel {
                     }
                 }
                 
-                if( count == 64 ) {
+                if( count == this.iterations ) {
                     raster.setPixel(row, column, black );
                 } // if
                 else {
-                    raster.setPixel( row, column, palette[count] );
+                    raster.setPixel(row, column, this.colors[count] );
                 } // else
                 
 //                if( row < column ) {
@@ -159,7 +167,8 @@ public class FractalSetPanel extends JPanel {
             g2D.drawString(this.isMandelbrot ? "Mandelbrot Set" : "Burning Ship", 5, 15);
             g2D.drawString("Center: " + new Complex(this.centerX, this.centerY), 5, 30);
             g2D.drawString("Scale: " + this.scale, 5, 45);
-            g2D.drawString(this.lastAction, 5, 60);
+            g2D.drawString(this.iterations + " iteration" + (this.iterations == 1 ? "" : "s"), 5, 60);
+            g2D.drawString(this.lastAction, 5, 75);
             g2D.drawString("Press (m) for help (See System.out)", 5, 691-10);
         }
 
@@ -202,6 +211,20 @@ public class FractalSetPanel extends JPanel {
         this.repaint();
     }
     
+    public void incrementIterations() {
+        this.iterations += 1;
+        this.setUpColors();
+        this.lastAction = "Iterations increased to " + this.iterations;
+        this.repaint();
+    }
+    
+    public void decrementIterations() {
+        this.iterations = Math.max(this.iterations - 1, 1);
+        this.setUpColors();
+        this.lastAction = "Decreased iterations to " + this.iterations;
+        this.repaint();
+    }
+    
     public void toggleMandelbrot() {
         this.isMandelbrot = !this.isMandelbrot;
         this.lastAction = "Switched to " + (this.isMandelbrot ? "Mandelbrot" : "Burning Ship") + " set";
@@ -224,6 +247,7 @@ public class FractalSetPanel extends JPanel {
         this.centerX = 0.0;
         this.centerY = 0.0;
         this.scale = 4.0;
+        this.iterations = 64;
         this.lastAction = "Rehomed";
         this.repaint();
     }
@@ -241,12 +265,14 @@ public class FractalSetPanel extends JPanel {
             FractalSet Version 1.0
                 Authors: Leon Tabak and Mac Coleman
                 Date: 12/8/2021
+                           
             ┄┄┄┄┄┄┄┄┄┄┄┄      
             
             HELP:
                     This program displays two fractals, the Mandelbrot set and
                     the Burning ship set. Both fractals are drawn by iterating
-                    the complex function 64 times.
+                    the complex function 64 times by default.
+                           
             ┄┄┄┄┄┄┄┄┄┄┄┄
                               
             KEYBINDINGS:
@@ -273,6 +299,14 @@ public class FractalSetPanel extends JPanel {
                 - (Minus key)
                     Zoom out
                            
+                { (Opening brace)
+                    Decreases the amount of iterations done when drawing the
+                    fractal
+                           
+                } (Closing brace)
+                    Increases the amount of iterations done when drawing the
+                    fractal
+                           
                 Z
                     Switch between drawing the Mandelbrot and Burning Ship set.
             
@@ -283,7 +317,8 @@ public class FractalSetPanel extends JPanel {
                     Toggle centerline display
                            
                 B
-                    Return home (Resets scaling, centerpoint of drawing)
+                    Return home (Resets scaling, centerpoint of drawing, and
+                    iterations made)
                 
                 Q
                     Print the centerpoint to System.out

@@ -58,6 +58,8 @@ public class FractalSet extends JFrame {
                     case 81: fractalSet.panel.printCenter(); break;      // q
                     case 88: fractalSet.panel.toggleDebug(); break;      // x
                     case 90: fractalSet.panel.toggleMandelbrot(); break; // z
+                    case 91: fractalSet.panel.decrementIterations(); break; // {
+                    case 93: fractalSet.panel.incrementIterations(); break; // }
                 }
             };
             
